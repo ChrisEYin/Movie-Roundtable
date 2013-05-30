@@ -1,0 +1,8 @@
+<div class="questionPopupForm">
+	<h5><div class="questionPopupTitle"> Add Question</div></h5>
+	<form action = "/home/{{ form.movie.id }}/add_question/" method = "post">{% csrf_token %}
+		<p>{{ form.as_p }}</p>
+		<p><div class="addQuestionButton"><input type = "submit" value = "Ask Question" class="btn btn-success" /></div></p>
+		<input type = "hidden" name = "next" value = "{{ next|escape }}" />
+	</form>
+</div>

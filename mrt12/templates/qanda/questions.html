@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+
+<meta charset="UTF-8" />
+<meta name="google" value="notranslate">
+<meta http-equiv="Content-Language" content="en" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="{{ STATIC_URL }}js/prefixfree.min.js"></script>
+<script src="{{ STATIC_URL }}js/qanda.js"></script>
+<script src="{{ STATIC_URL }}js/tiny_mce.js"></script>
+<script src="{{ STATIC_URL }}js/jquery.infinitescroll.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/qanda.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/button.css">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
+ <script type="text/javascript" charset="utf-8">
+$(function() {
+      $('.question').endlessScroll({
+        fireOnce: false,
+        insertAfter: ".question div:last",
+        data: function(i) {
+          return '<li>' + i + '</li>'
+        }
+      });
+    });
+  </script>
+
+
+
+<title>Movie Roundtable</title>
+
+</head>
+<div class="header">
+	<ul id="logo">
+		<li>
+			<a href="/home/"><img src="{{ STATIC_URL }}images/logo.jpg"></img></a>
+		</li>
+	</ul>
+	<ul class="search">	
+		<form class="navbar-search" action = "/home/search" method="GET">
+			<input type="text" class="search-query" placeholder="Search Movie" name="q">
+		</form>
+	</ul>	
+	<ul id="navigation">
+		{% if user.is_authenticated %}
+			<p> Welcome back, {{ user.username }}! 
+				<a href="/home/accounts/logout" class="btn-large btn-inverse">Logout</a>
+			</p>
+		{% else %}
+			<li><a href="#">Register</a>
+				<form action = "/home/register/" method = "post" id = "register">
+					{% csrf_token %}
+					{{ form1.as_p }}
+					<input type = "submit" value = "Create!">
+					<input type = "hidden" name = "next" value = "{{ next|escape }}" />
+				</form>
+			</li>
+			<li>|</li>
+			<li><a href="#">Sign In</a>
+				<form action = "/home/accounts/login/" method = "post" id = "cork">{% csrf_token %}
+					<label for = "username"> Username: </label>
+						<input type = "text" name = "username" value = "" id = "username">
+					<label for = "password"> Password: </label>
+						<input type = "password" name = "password" value = "" id = "password">
+						<br><a href = "/home/forgot/" class = "forgotPassword"> Forgot Password? </a>
+					<input type = "submit" value = "Login" class = "submitLogin" />
+						<input type = "hidden" name = "next" value = "{{ next|escape }}" />
+				</form>
+			</li>
+		{% endif %}
+	</ul>	
+</div>
+<div class="content">
+	<div class="questions">
+		<div class="questionButtonandDropdown">
+			<div class="movietitle">{{ movie.title }}</div>
+			<div class="questionbutton">
+				{% if user.is_authenticated %}
+					<a href="#" class="askQuestionMain" width="50">
+						<div class="btn btn-success">Ask a Question</div>
+					</a>
+			</div>
+					<form action = "/home/{{ movie.id }}/add_question/" method = "post" class="addQuestionWindow">
+						{% csrf_token %}
+						{{ form2.as_p }}
+						<p><div class="addQuestionButton"><input type = "submit" value = "Ask Question" class="btn btn-success" /></div></p>
+						<input type = "hidden" name = "next" value = "{{ next|escape }}" />
+					</form>
+				{% else %}
+					<a href = "/home/register/" class = "btn btn-success">Ask a Question</a>
+				{% endif %}
+		</div>
+		<div class="questionvotecontainer">
+			<div class="question">
+				{% if the_question %}
+				<ul>
+					{% load voting_tags %}
+					{% votes_by_user user on the_question as vote_dict %}
+					{% scores_for_objects the_question as score_dict %}
+					
+					{% for question in the_question %}
+					{% dict_entry_for_item question from vote_dict as vote %}
+					{% dict_entry_for_item question from score_dict as score %}
+					
+					{% if user.is_authenticated %}
+					<li>
+						<div class="votecounter">
+							<span class="score" id="linkscore{{ question_id }}"
+							title="after {{ score.num_votes|default:0 }} vote{{ score.num_votes|default:0|pluralize }}">
+							{{ score.score|default:0 }}
+							</span>
+						</div>
+						<div class="votearrowdiv">
+							<form class="linkvote" id="linkup{{ question.id }}" action="/home/{{ question.id }}/{% if vote and vote.is_upvote %}clear{% else %}up{% endif %}/vote/" method="POST">
+								{% csrf_token %}
+								<input type="image" id="linkuparrow{{ question.id }}" class="{% if vote and vote.is_upvote %}uparrowBlue{% else %}uparrow{% endif %}" value=""></input>
+							</form>
+							<form class="linkvote" id="linkdown{{ question.id  }}" action="/home/{{ question.id }}/{% if vote and vote.is_downvote %}clear{% else %}down{% endif %}/vote/" method="POST">
+								{% csrf_token %}
+								<input type="image" id="linkdownarrow{{ question.id  }}" class="{% if vote and vote.is_downvote %}downarrowBlue{% else %}downarrow{% endif %}" value=""></input>
+							</form>
+						</div>
+							<div class="actualQuestion">
+							<a href="/home/{{ movie.id }}/{{ question.id }}/">{{ question.question_text }}</a>
+							</div>
+					</li>
+					{% else %}
+					<li>
+						<div class="votecounter">
+							<span class="score" id="linkscore{{ question_id }}"
+							title="after {{ score.num_votes|default:0 }} vote{{ score.num_votes|default:0|pluralize }}">
+							{{ score.score|default:0 }}
+							</span>
+						</div>
+						<div class="votearrowdiv">
+							<form class="linkvote" id="linkup{{ question.id }}" action="/home/register/" method="POST">
+								{% csrf_token %}
+								<input type="image" id="linkuparrow{{ question.id }}" class="{% if vote and vote.is_upvote %}uparrowBlue{% else %}uparrow{% endif %}" value=""></input>
+							</form>
+							<form class="linkvote" id="linkdown{{ question.id  }}" action="/home/register/" method="POST">
+								{% csrf_token %}
+								<input type="image" id="linkdownarrow{{ question.id  }}" class="{% if vote and vote.is_downvote %}downarrowBlue{% else %}downarrow{% endif %}" value=""></input>
+							</form>
+						</div>
+							<div class="actualQuestion">
+							<a href="/home/{{ movie.id }}/{{ question.id }}/">{{ question.question_text }}</a>
+							</div>
+					</li>
+					{% endif %}
+					
+					{% endfor %}
+				</ul>
+				{% else %}
+					<p class = "noQuestionsYet">No questions have been asked.</p>
+			{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="answers">
+	</div>
+
+	
+</div>
+
+</html>

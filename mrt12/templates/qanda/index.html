@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<head>
+
+<meta charset="UTF-8" />
+<meta name="google" value="notranslate">
+<meta http-equiv="Content-Language" content="en" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="{{ STATIC_URL }}js/prefixfree.min.js"></script>
+<script src="{{ STATIC_URL }}js/index.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/index.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/button.css">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
+
+<title>Movie Roundtable</title>
+
+</head>
+
+<div class="fullwrapper">
+<div class="headwrapper">
+	<div class="header">
+		<ul id="logo">
+			<li>
+				<a href="/home/"><img src="http://i.imgur.com/8ScAe.jpg"></img></a>
+			</li>
+		</ul>
+		<ul id="navigation">
+			{% if user.is_authenticated %}
+				<p> Welcome back, {{ user.username }}! 
+					<a href="/home/accounts/logout/" class="btn-large btn-inverse">Logout</a>
+				</p>
+			{% else %}
+				<li><a href="#">Register</a>
+					<form action = "/home/register/" method = "post" id = "register">
+						{% csrf_token %}
+						{{ form.as_p }}
+						<input type = "submit" value = "Create!">
+							<input type = "hidden" name = "next" value = "{{ next|escape }}" />
+					</form>
+				</li>
+				<li>|</li>
+				<li><a href="#">Sign In</a>
+					<form action = "/home/accounts/login/" method = "post" id = "cork">
+						{% csrf_token %}
+						<label for = "username"> Username: </label>
+							<input type = "text" name = "username" value = "" id = "username">
+						<label for = "password"> Password: </label>
+							<input type = "password" name = "password" value = "" id = "password">
+							<br><a href = "/home/forgot/" class="forgotPassword"> Forgot Password? </a>
+						<input type = "submit" value = "Login" class="submitLogin"/>
+							<input type = "hidden" name = "next" value = "{{ next|escape }}" />
+					</form>
+				</li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+
+<div class="pictureframe">
+	<div id="lrgimg">
+		<div class="imagereserve">
+			<div id="imgtext"> Get Answers. Gain Insight. 
+				<br> Discuss Intelligently.
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="category">
+		<div class="block1"></div>
+		<div class="block2">	
+			<ul id="search">	
+				<form class="navbar-search" action = "/home/search" method="GET">
+					<input type="text" class="search-query" placeholder="Search Movie" name="q">
+				</form>
+			</ul>
+		</div>
+		<div class="block3">
+			{% if user.is_authenticated %}
+				<a href="/home/add_movie" class="btn btn-success">Add a Movie</a>	
+			{% else %}
+				<a href = "/home/register" class = "btn btn-success">Add a Movie</a>
+			{% endif %}
+		</div>
+	<div class="arrowsandcontent">
+		<div class="leftarrowdiv">
+			<div class="leftarrow"></div>
+		</div>
+		<div class="rightarrowdiv">
+			<div class="rightarrow"></div>
+		</div>
+		<div class="content">
+			<ul class="content_covers">
+				{% if latest_movie_list %}
+					{% for movie in latest_movie_list %}
+					<li>
+						<a href="/home/{{ movie.id }}/"><img src = "{{ MEDIA_URL }}movie_posters/{{ movie.poster }}"></a>
+					</li>
+					{% endfor %}
+			</ul>
+				{% else %}
+					<p> No movies are available.</p>
+				{% endif %}
+			<ul class="content_names">
+				{% if latest_movie_list %}
+					{% for movie in latest_movie_list %}
+					<li>
+						<a href="/home/{{ movie.id }}/">{{ movie.title }}</a>
+					</li>
+					{% endfor %}
+			</ul>
+				{% else %}
+					<p>No movies are available.</p>
+				{% endif %}
+		</div>		
+	</div>	
+
+
+</div>	
+</div>
+
+	<div class="footer">
+		<ul>
+
+		</ul>
+	</div>
+
+</div>
+</html>

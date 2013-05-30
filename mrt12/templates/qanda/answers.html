@@ -1,0 +1,33 @@
+
+<div class="answerformat">
+	<div class="answertitle"><p>{{ question.question_text }}</p></div>
+	<div class="questionDescription"><p>{{ question.question_detail }}</p></div>
+	
+	<hr>
+		{% if the_answers %}
+		
+		{% for answers in the_answers %}
+		<div class="answerandcomments">	
+			<br class="answer">{{ answers.answer_text }}</br>
+			<div class="answercomments"> - posted <span class="timeposted">{{ answers.a_pub_date|timesince }} ago </span> by <span class="userposted">{{ answers.a_author }}</span></div>
+		</div>
+		{% endfor %}
+
+		{% else %}
+			<div class="noAnswersYet">No Answers yet.</div>
+		{% endif %}
+</div>
+<br>
+<hr>
+<div class="answerTextArea">
+	<h4><span style="font-size:24px;">Your Answer</span></h4>
+		<form action = "/home/{{ movie.id }}/{{ question.id }}/add_answer/" method = "post">{% csrf_token %}
+			<p>{{ form.as_p }}</p>
+			{% if user.is_authenticated %}
+				<p><div class="addAnswerButton"><input type = "submit" value = "Add Your Answer" class="btn btn-success"/></div></p>
+				<p><input type = "hidden" name = "next" value = "{{ next|escape }}" /></p>
+			{% else %}
+				<a href = "/home/register" class = "btn btn-success">Add Your Answer</a>
+			{% endif %}
+		</form>
+</div>

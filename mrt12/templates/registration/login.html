@@ -1,0 +1,49 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/base.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/button.css">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
+
+<title>Movie Roundtable</title>
+</head>
+
+<body>
+<div class="fullwrapper"></div>
+<div class="header">
+	<ul id="logo">
+		<li><a href="/home/"><img src="http://i.imgur.com/8ScAe.jpg"></img></a></li>
+	</ul>
+	<ul id="navigation">
+			{% if user.is_authenticated %}
+				<p> Welcome back, {{ user.username }}! 
+					<a href="/home/accounts/logout/" class="btn-large btn-inverse">Logout</a>
+				</p>
+			{% else %}
+				<li><a href="/home/register/">Register</a></li>
+				<li> | </li>
+				<li><a href="/home/accounts/login/">Sign In</a></li>
+			{% endif %}
+	</ul>
+</div>
+<div class="loginHeading">
+	Login 
+	<div class="loginForm">
+		{% if form.errors %}
+			<p class = "error"> Sorry, that's not a valid username or password</p>
+			
+		{% endif %}
+	<form action = "" method = "post">{% csrf_token %}
+		<p><label for = "username"> User name: </label>
+		<p><input type = "text" name = "username" value = "" id = "username">
+		<p><lable for = "password"> Password: </label>
+		<p><input type = "password" name = "password" value = "" id = "password">
+		
+		<p><input type = "submit" value = "Login" class="btn btn-success" />
+		<p><input type = "hidden" name = "next" value = "{{ next|escape }}" />
+	</form>
+
+</div>
+</div>
+
+</body>
+</html>

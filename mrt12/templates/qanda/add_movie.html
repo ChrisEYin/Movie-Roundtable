@@ -1,0 +1,38 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/base.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/button.css">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
+
+<title>Movie Roundtable</title>
+</head>
+
+<body>
+<div class="fullwrapper"></div>
+<div class="header">
+	<ul id="logo">
+		<li><a href="/home/"><img src="http://i.imgur.com/8ScAe.jpg"></img></a></li>
+	</ul>
+	<ul id="navigation">
+			{% if user.is_authenticated %}
+				<p> Welcome back, {{ user.username }}!
+					<a href="/home/accounts/logout/" class="btn-large btn-inverse">Logout</a></p>
+			{% else %}
+				<li><a href="/home/register/">Register</a></li>
+				<li> | </li>
+				<li><a href="/home/accounts/login/">Sign In</a></li>
+			{% endif %}
+	</ul>
+</div>
+
+<div class="addMoviePage">
+	<h5><div class="moviePopupTitle">Add a Movie!</div></h5>
+	<form enctype = "multipart/form-data" action = "/home/add_movie/" method = "post">{% csrf_token %}
+		<p>{{ form.as_p }}</p>
+		<p><div class="addMovieButton"><input type = "submit" value = "Add Movie" class="btn btn-success"/></div></p>
+		<p><input type = "hidden" name = "next" value = "{{ next|escape }}" />
+	</form>
+</div>
+
+</body>
+</html>

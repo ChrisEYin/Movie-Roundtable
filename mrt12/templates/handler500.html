@@ -1,0 +1,31 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/mrt-static/static/css/base.css">
+<link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/mrt-static/static/css/button.css">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
+
+<title>Movie Roundtable</title>
+</head>
+
+<body>
+<div class="fullwrapper"></div>
+<div class="header">
+	<ul id="logo">
+		<li><a href="/home/"><img src="http://i.imgur.com/8ScAe.jpg"></img></a></li>
+	</ul>
+	<ul id="navigation">
+			{% if user.is_authenticated %}
+				<p> Welcome back, {{ user.username }}! </p>
+			{% else %}
+				<li><a href="/home/register/">Register</a></li>
+				<li> | </li>
+				<li><a href="/home/accounts/login/">Sign In</a></li>
+			{% endif %}
+	</ul>
+</div>
+
+<div class="loggedOutPage">
+<h1><span style="padding-left:30%;color:black;margin-top:100px;"></span></h1>
+
+<span style="font-size:32px; padding-left:42.5%;"><a href = "/home/">Something's up with our servers. We're working hard to fix it!</a></span>
+</div>
